@@ -12,8 +12,9 @@
 extern "C" {
 #endif
 
-void i2c_cmd(char Package);
+void i2c_write(char Package, char Command);
 void sensor_init(void);
+char i2c_readR(void)
 
 
 #ifdef	__cplusplus
