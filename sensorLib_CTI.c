@@ -76,31 +76,31 @@
 #define TCS34725_INTEGRATIONTIME_600MS (0x06) /**< 600.0ms - 250 cycles - Max Count: 65535 */
 #define TCS34725_INTEGRATIONTIME_614MS (0x00) /**< 614.4ms - 256 cycles - Max Count: 65535 */
 
-void i2c_cmd(char Package){
-    I2C2CONbits.SEN = 1;
-    while(I2C2CONbits.SEN == 1);
-    IFS3bits.MI2C2IF = 0;
-    I2C2TRN = TCS34725_ADDRESS_WRITE;
-    while(IFS3bits.MI2C2IF == 0);
-    IFS3bits.MI2C2IF = 0;
-    I2C2TRN = 0b00000000;
-    while(IFS3bits.MI2C2IF == 0);
-    IFS3bits.MI2C2IF = 0;
-    I2C2TRN = Package;
-    while(IFS3bits.MI2C2IF == 0);
-    IFS3bits.MI2C2IF = 0;    
-    I2C2CONbits.PEN = 1;
-    while(I2C2CONbits.PEN == 1);
-}
+//void i2c_cmd(char Package){
+//    I2C2CONbits.SEN = 1;
+//    while(I2C2CONbits.SEN == 1);
+//    IFS3bits.MI2C2IF = 0;
+//    I2C2TRN = TCS34725_ADDRESS_WRITE;
+//    while(IFS3bits.MI2C2IF == 0);
+//    IFS3bits.MI2C2IF = 0;
+//    I2C2TRN = 0b00000000;
+//    while(IFS3bits.MI2C2IF == 0);
+//    IFS3bits.MI2C2IF = 0;
+//    I2C2TRN = Package;
+//    while(IFS3bits.MI2C2IF == 0);
+//    IFS3bits.MI2C2IF = 0;    
+//    I2C2CONbits.PEN = 1;
+//    while(I2C2CONbits.PEN == 1);
+//}
 
-void i2c_write(char Package, char Command){
+void i2c_write(char regAddr, char Package){
     I2C2CONbits.SEN = 1;
     while(I2C2CONbits.SEN == 1);
     IFS3bits.MI2C2IF = 0;
     I2C2TRN = TCS34725_ADDRESS_WRITE;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
-    I2C2TRN = Command;
+    I2C2TRN = regAddr;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
     I2C2TRN = Package;
@@ -145,10 +145,11 @@ void sensor_init(void){
     I2C2CONbits.I2CEN = 1;
     IFS3bits.MI2C2IF = 0;
     
-    i2c_cmd(TCS34725_ENABLE);
-    i2c_cmd(TCS34725_ENABLE_PON);
+    i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON);
     delay(3);
-    i2c_cmd(TCS34725_ENABLE);
-    i2c_cmd(TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
+    i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
     delay(214);
 }
+
+
+
