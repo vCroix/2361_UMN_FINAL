@@ -21,6 +21,7 @@
                                        // Fail-Safe Clock Monitor is enabled)
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
+/* Don't you dare pull this if you're in EE2361 c. Spring 2023*/
 
 void setup(void){
     CLKDIVbits.RCDIV = 0;
