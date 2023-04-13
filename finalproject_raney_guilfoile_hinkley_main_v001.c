@@ -21,11 +21,11 @@
                                        // Fail-Safe Clock Monitor is enabled)
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
-/* Don't you dare pull this if you're in EE2361 c. Spring 2023*/
 
 void setup(void){
     CLKDIVbits.RCDIV = 0;
-    AD1PCFG = 0xFFFE;   
+    AD1PCFG = 0xFFFE;
+    TRISBbits.TRISB8 = 0; // sets RB8 as output(FOR USELESS TEST BITCH LED)
 }
 
 void delay(int delay_in_ms){
@@ -37,4 +37,11 @@ void delay(int delay_in_ms){
 int main(){
     setup();
     sensor_init();
+    int redVal = 0;
+    
+    while(1){
+        redVal = i2c_readR();
+        delay(20);
+        
+    }
 }
