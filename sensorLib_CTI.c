@@ -22,7 +22,7 @@ void i2c_write(char regAddr, char Package){
 
 int i2c_readR(void){
     int data;
-    
+    // Write Slave address and command code
     I2C2CONbits.SEN = 1;
     while(I2C2CONbits.SEN == 1);
     IFS3bits.MI2C2IF = 0;
@@ -32,15 +32,22 @@ int i2c_readR(void){
     I2C2TRN = TCS34725_RDATAH | 0b10000000;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
+    
+    // Enable RS bit and Read from slave device
     I2C2CONbits.RSEN = 1;
     while(I2C2CONbits.RSEN == 1);
     I2C2TRN = TCS34725_ADDRESS_READ;
     while(I2C2STATbits.TRSTAT);
     I2C2CONbits.RCEN = 1;
+    
+    // When ready, save data from buffer register
     while(!I2C2STATbits.RBF);
-    I2C2CONbits.ACKEN = 1;
-    while(I2C2CONbits.ACKEN);
     data = I2C2RCV;
+    
+    // Send NACK bit and stop bit
+    I2C2CONbits.ACKEN = 1;
+    I2C2CONbits.ACKDT = 1;
+    while(I2C2CONbits.ACKEN);
     I2C2CONbits.PEN = 1;
     while(I2C2CONbits.PEN == 1);    
     
