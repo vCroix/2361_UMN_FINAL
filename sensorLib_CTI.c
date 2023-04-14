@@ -102,7 +102,7 @@ int i2c_readR(void){
     I2C2TRN = TCS34725_ADDRESS_WRITE;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
-    I2C2TRN = TCS34725_ID | 0b1000000;
+    I2C2TRN = TCS34725_RDATAH | 0b10000000;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
     I2C2CONbits.RSEN = 1;
@@ -111,9 +111,9 @@ int i2c_readR(void){
     while(I2C2STATbits.TRSTAT);
     I2C2CONbits.RCEN = 1;
     while(!I2C2STATbits.RBF);
-    data = I2C2RCV;
     I2C2CONbits.ACKEN = 1;
     while(I2C2CONbits.ACKEN);
+    data = I2C2RCV;
     I2C2CONbits.PEN = 1;
     while(I2C2CONbits.PEN == 1);    
     
@@ -133,3 +133,6 @@ void sensor_init(void){
     i2c_write(TCS34725_CONTROL, 0b00000000);
     delay(214);
 }
+
+
+
