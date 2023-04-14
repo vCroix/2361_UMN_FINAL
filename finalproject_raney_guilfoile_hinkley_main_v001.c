@@ -38,9 +38,11 @@ int main(){
     setup();
     sensor_init();
     int redVal = 0;
+    int temp;
     
     while(1){
         redVal = i2c_readR();
+        temp = redVal;
         delay(20);
         
     }
