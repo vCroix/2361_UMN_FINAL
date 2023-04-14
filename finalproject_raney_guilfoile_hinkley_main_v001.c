@@ -34,6 +34,13 @@ void delay(int delay_in_ms){
     }
 }
 
+void restart(void) {    
+    i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
+    i2c_write(TCS34725_ATIME, TCS34725_INTEGRATIONTIME_101MS);
+    i2c_write(TCS34725_CONTROL, 0b00000000);
+    delay(214);
+}
+
 int main(){
     setup();
     sensor_init();
@@ -44,6 +51,9 @@ int main(){
         redVal = i2c_readR();
         temp = redVal;
         delay(20);
-        
+        if (redVal >= 5) {
+            LATBbits.LATB8 = 1;
+        }
+//         restart();
     }
 }
