@@ -34,6 +34,11 @@ void delay(int delay_in_ms){
     }
 }
 
+/*
+For minimally working hardware, color sensor is set 
+to detect red values in hand and LED will turn off 
+if red is detected as shown in video
+*/
 int main(){
     setup();
     sensor_init();
