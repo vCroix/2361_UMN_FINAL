@@ -34,26 +34,29 @@ void delay(int delay_in_ms){
     }
 }
 
-void restart(void) {    
-    i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
-    i2c_write(TCS34725_ATIME, TCS34725_INTEGRATIONTIME_101MS);
-    i2c_write(TCS34725_CONTROL, 0b00000000);
-    delay(214);
-}
-
 int main(){
     setup();
     sensor_init();
+    delay(200);
+    int enable = i2c_read8bits(0x00);
     int redVal = 0;
+    int clrVal = 0;
     int ID;
+    unsigned int RED;
     
     while(1){
         redVal = i2c_read16bits(TCS34725_RDATAL);
-        ID = i2c_read8bits(TCS34725_ID);
+        clrVal = i2c_read16bits(TCS34725_CDATAL);
+        RED = (redVal/clrVal) * 255;
+        ID = i2c_read8bits(0x12); // checking ID register to make sure read is working correctly, should return 0x44
         delay(20);
-        if (redVal >= 5) {
+        LATBbits.LATB8 = 0;
+        if (RED >= 255){
             LATBbits.LATB8 = 1;
+            delay(200);
         }
         exitWait();
+        
     }
 }
+
