@@ -14,7 +14,9 @@ extern "C" {
 
     void i2c_write(char Package, char Command);
     void sensor_init(void);
-    int i2c_readR(void);
+    void exitWait(void);
+    int i2c_read8bits(char regAddr);
+    char i2c_read16bits(char lowColorReg);
 
 #ifdef	__cplusplus
 }
