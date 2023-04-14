@@ -45,15 +45,15 @@ int main(){
     setup();
     sensor_init();
     int redVal = 0;
-    int temp;
+    int ID;
     
     while(1){
-        redVal = i2c_readR();
-        temp = redVal;
+        redVal = i2c_read16bits(TCS34725_RDATAL);
+        ID = i2c_read8bits(TCS34725_ID);
         delay(20);
         if (redVal >= 5) {
             LATBbits.LATB8 = 1;
         }
-//         restart();
+        exitWait();
     }
 }
