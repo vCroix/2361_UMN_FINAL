@@ -1,8 +1,6 @@
 #include "xc.h"
 #include "sensorLib_CTI.h"
 
-/* define statements have been moved to sensorLib_CTI.h */
-
 void i2c_write(char regAddr, char Package){
     I2C2CONbits.SEN = 1;
     while(I2C2CONbits.SEN == 1);
@@ -10,7 +8,7 @@ void i2c_write(char regAddr, char Package){
     I2C2TRN = TCS34725_ADDRESS_WRITE;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
-    I2C2TRN = regAddr;
+    I2C2TRN = regAddr | 10000000;
     while(IFS3bits.MI2C2IF == 0);
     IFS3bits.MI2C2IF = 0;
     I2C2TRN = Package;
@@ -71,10 +69,15 @@ void sensor_init(void){
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON);
     delay(3);
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
-    i2c_write(TCS34725_ATIME, TCS34725_INTEGRATIONTIME_101MS);
+    i2c_write(TCS34725_ATIME, 101);
     i2c_write(TCS34725_CONTROL, 0b00000000);
-    delay(214);
+    delay((256 - 101) * 12 / 5 + 1);
 }
 
+// Exit the wait state of color sensor to update register values
+void exitWait(void) {
+    i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
+    delay(214);
+}
 
 
