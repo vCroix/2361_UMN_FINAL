@@ -66,6 +66,16 @@ void sensor_init(void){
     I2C2CONbits.I2CEN = 1;
     IFS3bits.MI2C2IF = 0;
     
+//    // Send 8 bits to command register indicating repeated byte protocol transaction
+//    I2C2CONbits.SEN = 1;
+//    while(I2C2CONbits.SEN == 1);
+//    IFS3bits.MI2C2IF = 0;
+//    I2C2TRN = 10000110;
+//    while(IFS3bits.MI2C2IF == 0);
+//    IFS3bits.MI2C2IF = 0;
+//    I2C2CONbits.PEN = 1;
+//    while(I2C2CONbits.PEN == 1);
+    
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON);
     delay(3);
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
@@ -74,10 +84,16 @@ void sensor_init(void){
     delay((256 - 101) * 12 / 5 + 1);
 }
 
-// Exit the wait state of color sensor to update register values
 void exitWait(void) {
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
     delay(214);
 }
 
+int getRGB(float colorRaw, float clearRaw) {
+    float sum = clearRaw;
+    if (clearRaw == 0) {
+        return -1; // Return -1 for Black
+    }
+    return (int)((colorRaw / sum) * 255.0);
+}
 
