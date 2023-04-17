@@ -92,6 +92,7 @@ extern "C" {
     void exitWait(void);
     int i2c_read8bits(char regAddr);
     char i2c_read16bits(char lowColorReg);
+    int getRGB(float colorRaw, float clearRaw);
 
 #ifdef	__cplusplus
 }
