@@ -25,7 +25,7 @@
 void setup(void){
     CLKDIVbits.RCDIV = 0;
     AD1PCFG = 0xFFFE;
-    TRISBbits.TRISB8 = 0; // sets RB8 as output(FOR USELESS TEST BITCH LED)
+    TRISBbits.TRISB8 = 0; // sets RB8 as output
 }
 
 void delay(int delay_in_ms){
@@ -34,29 +34,31 @@ void delay(int delay_in_ms){
     }
 }
 
-/*
-For minimally working hardware, color sensor is set 
-to detect red values in hand and LED will turn off 
-if red is detected as shown in video
-*/
 int main(){
     setup();
     sensor_init();
     delay(200);
-    int enable = i2c_read8bits(0x00);
-    int redVal = 0;
-    int clrVal = 0;
-    int ID;
-    unsigned int RED;
+    unsigned int redVal = 0;
+    unsigned int greenVal = 0;
+    unsigned int blueVal = 0;
+    unsigned int clrVal = 0;
+    int RED;
+    int GREEN;
+    int BLUE;
     
     while(1){
         redVal = i2c_read16bits(TCS34725_RDATAL);
+        greenVal = i2c_read16bits(TCS34725_GDATAL);
+        blueVal = i2c_read16bits(TCS34725_BDATAL);
         clrVal = i2c_read16bits(TCS34725_CDATAL);
-        RED = (redVal/clrVal) * 255;
-        ID = i2c_read8bits(0x12); // checking ID register to make sure read is working correctly, should return 0x44
-        delay(20);
+        
+        RED = getRGB(redVal, clrVal);
+        GREEN = getRGB(greenVal, clrVal);
+        BLUE = getRGB(blueVal, clrVal);
+        
+        delay(10);
         LATBbits.LATB8 = 0;
-        if (RED >= 255){
+        if (RED >= 255){ // Change to include R, G, and B to avoid detecting pure white
             LATBbits.LATB8 = 1;
             delay(200);
         }
