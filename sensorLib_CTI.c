@@ -86,7 +86,6 @@ void sensor_init(void){
 
 void exitWait(void) {
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
-    delay(214);
 }
 
 int getRGB(float colorRaw, float clearRaw) {
