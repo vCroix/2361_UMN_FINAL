@@ -21,7 +21,7 @@
                                        // Fail-Safe Clock Monitor is enabled)
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
-
+// PIC24 general setup
 void setup(void){
     CLKDIVbits.RCDIV = 0;
     AD1PCFG = 0xFFFE;
@@ -38,6 +38,7 @@ int main(){
     setup();
     sensor_init();
     delay(200);
+    
     unsigned int redVal = 0;
     unsigned int greenVal = 0;
     unsigned int blueVal = 0;
@@ -47,22 +48,28 @@ int main(){
     int BLUE;
     
     while(1){
+        // set delay for FLORA integration time then read raw data for from each color register
+        delay((256 - 0xC0) * 12 / 5 + 1);
         redVal = i2c_read16bits(TCS34725_RDATAL);
         greenVal = i2c_read16bits(TCS34725_GDATAL);
         blueVal = i2c_read16bits(TCS34725_BDATAL);
         clrVal = i2c_read16bits(TCS34725_CDATAL);
-        
+
+        // Convert raw data to RGB values for each color
         RED = getRGB(redVal, clrVal);
         GREEN = getRGB(greenVal, clrVal);
         BLUE = getRGB(blueVal, clrVal);
         
-        delay(10);
-        LATBbits.LATB8 = 0;
-        if (RED >= 255){ // Change to include R, G, and B to avoid detecting pure white
-            LATBbits.LATB8 = 1;
-            delay(200);
+        /* 
+         * Turn LED off then immediately test if RED is present
+         * If red is high, turn LED on
+         * Then, exit the idle state on FLORA to sense new color data
+         */
+        LATBbits.LATB8 = 1;
+        if (RED >= 10){
+            LATBbits.LATB8 = 0;
+            delay(10);
         }
-        exitWait();
-        
+        exitIdle();
     }
 }
