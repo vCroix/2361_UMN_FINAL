@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "xc.h"
+#include "servo_lib_v001.h"
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
 #pragma config ICS = PGx1          // Comm Channel Select (Emulator EMUC1/EMUD1 pins are shared with PGC1/PGD1)
@@ -25,7 +26,7 @@
                                        // Fail-Safe Clock Monitor is enabled)
 #pragma config FNOSC = FRCPLL      // Oscillator Select (Fast RC Oscillator with PLL module (FRCPLL))
 
-volatile int stickVal=0;
+volatile unsigned int stickVal_horiz=0;
 
 void delay_ms(unsigned int ms) {
     while(ms-- > 0) {
@@ -36,7 +37,7 @@ void delay_ms(unsigned int ms) {
 
 // Middle position digital value: 484 ~ 486
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt(void) {
-    stickVal = ADC1BUF0;
+    stickVal_horiz = ADC1BUF0;
     _AD1IF = 0; // Reset IF
 }
 
@@ -66,44 +67,67 @@ void adc_init(void) {
     
     TMR3 = 0;           // Setup timer 3
     T3CON = 0;
-    T3CONbits.TCKPS = 0b01;
-    PR3 = 15624;
+    T3CONbits.TCKPS = 0b11;
+    PR3 = 1499;
     T3CONbits.TON = 1;
 }
 
 int main(void) {
     pic24init();
     adc_init();
+    initServo();
+    
+    // servoPos range: 1000 ~ 5000
+    // Middle servoPos: 3000
+    unsigned int servoPos = 3000;
+    
     while(1) {
-        if (stickVal > 490) {
+        // Slow RIGHT
+        if ((stickVal_horiz > 500) && (stickVal_horiz < 750)) {
             LATBbits.LATB8 = 0;
             LATBbits.LATB7 = 1;
-            delay_ms(10);
+            setServo(servoPos -= 15);
+            if (servoPos < 1000) {
+                servoPos = 1000;
+            }
         }
-        else if (stickVal < 480) {
+        // Fast RIGHT
+        else if (stickVal_horiz > 750) {
+            LATBbits.LATB8 = 0;
+            LATBbits.LATB7 = 1;
+            setServo(servoPos -= 50);
+            if (servoPos < 1000) {
+                servoPos = 1000;
+            }
+        }
+        
+        // Slow LEFT
+        else if ((stickVal_horiz < 470) && (stickVal_horiz > 300)) {
             LATBbits.LATB7 = 0;
             LATBbits.LATB8 = 1;
-            delay_ms(10);
+            setServo(servoPos += 15);
+            if (servoPos > 5000) {
+                servoPos = 5000;
+            }
         }
+        // Fast LEFT
+        else if(stickVal_horiz < 300) {
+            LATBbits.LATB7 = 0;
+            LATBbits.LATB8 = 1;
+            setServo(servoPos += 50);
+            if (servoPos > 5000) {
+                servoPos = 5000;
+            }
+        }
+        
+        // No Joystick input
         else {
             LATBbits.LATB7 = 1;
             LATBbits.LATB8 = 1;
-            delay_ms(10);
         }
-    }
-    return 0;
+        delay_ms(10);
+    } 
+    
+    return 0; // Never reached
 }
-/*
-    volatile int servoPos
-
-while(fast zone) {
-    setServo(Pos)
-    ServoPos += 100;
-}
-
-while (slow zone) {
-    setServo(servoPos) 
-    ServoPos += 10;
-}
- */
 
