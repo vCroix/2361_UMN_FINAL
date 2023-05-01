@@ -1,5 +1,8 @@
 # 2361_UMN_FINAL
-Light the Beam Final Project
+Light the Beam Final Project!
+
+[image](https://user-images.githubusercontent.com/118629718/235383101-97f5d469-0a9c-4361-b08e-694e04606e3d.jpeg)
+
 
 w code by croix and isaiah and thomas
 
