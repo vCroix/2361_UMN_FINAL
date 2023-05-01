@@ -39,7 +39,7 @@ int main(){
     sensor_init();
     delay(200);
     
-    i2c_exitInterrupt();
+    i2c_exitInterrupt(); // Exit internal interrupt on Flora Sensor
     
     unsigned int redVal = 0;
     unsigned int greenVal = 0;
@@ -49,28 +49,35 @@ int main(){
     int GREEN;
     int BLUE;
     
-    int AVALID = 0;
-    int deviceID = i2c_read8bits(TCS34725_ID);
+    int AVALID = 0; // Avalid bit is set on Flora Sensor when ADC integration is complete
+    int deviceID = i2c_read8bits(TCS34725_ID);  // Read from Device ID register in Flora Sensor to ensure proper read
+                                                // Device ID should read 0x44
     
     while(1) {
+        // Continuously read AVALID until it is set, indicating that ADC integration is complete on Flora Sensor
         while (AVALID == 0) {
            int STATUS = i2c_read8bits(TCS34725_STATUS);
            AVALID = STATUS & 0b00000001; // Only care about last bit 
         }
-        i2c_write(TCS34725_ENABLE, 0b00001011);
+        i2c_write(TCS34725_ENABLE, 0b00001011); // Enter IDLE state in Flora Sensor to prevent further ADC integrations temporarily
         
+        // Read all color registers on Flora Sensor
         redVal = i2c_read16bits(TCS34725_RDATAL);
         greenVal = i2c_read16bits(TCS34725_GDATAL);
         blueVal = i2c_read16bits(TCS34725_BDATAL);
         clrVal = i2c_read16bits(TCS34725_CDATAL);
         
-        // Convert raw data to RGB values for each color
+        // Convert raw data to RGB values for each color (0 ~ 255)
         RED = getRGB(redVal, clrVal);
         GREEN = getRGB(greenVal, clrVal);
         BLUE = getRGB(blueVal, clrVal);
+      
+        if ((RED > 150) && (BLUE < 150) && (GREEN < 150)) { // This can be changed if you think other values are better
+            // TUrn on Lightshow while(1)
+        }
         
-        AVALID = 0;
-        i2c_write(TCS34725_ENABLE, 0b00000011);
-        delay(160);
+        AVALID = 0; // Reset AVALID 
+        i2c_write(TCS34725_ENABLE, 0b00000011); // Exit IDLE state in Flora Sensor
+        delay(160); // Delay to allow for full integration cycle in Flora Sensor
     }
 }
