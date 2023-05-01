@@ -1,13 +1,10 @@
-# 2361_UMN_FINAL
-Light the Beam Final Project!
+### 2361_UMN_FINAL
+# Light the Beam Final Project!
 
-[image](https://user-images.githubusercontent.com/118629718/235383101-97f5d469-0a9c-4361-b08e-694e04606e3d.jpeg)
+![](https://user-images.githubusercontent.com/118629718/235383417-65a34c16-df22-4225-b7e1-eba3db2e5f7f.png)
 
+Created by **Croix Raney, Isaiah Guilfoile, and Thomas Hinkley** for EE 2361, Spring 2023
 
-w code by croix and isaiah and thomas
+Light the Beam is an original game where the player is tasked with aiming a red laser beam to a small shining target. If the user is successful, they will be alerted via a celebratory lightshow! The laser is mounted on a servo motor controlled by a joystick, giving the player full control of its movements. All components are mounted in a box that creates a challenging distance between the laser's origin and the target.
 
-I am getting a value from RDATAH high register consistently but it is not changing, I am making a new function to exit the wait state to see if that is the reason the register is not updating (Isaiah, Apr 14 3:33 pm)
-
-exitWait function is not fixing the problem so I'm working on a function that reads all 16 bits from the red registers to maybe end the data hold discussed on pg 19 of the sensor Datasheet (Isaiah, Apr 14 4:04 pm)
-
-I added a getRGB() function and improved on digital to hex color conversion. Seems to be accurately measuring color on first run through, but there is large error in proceding samples. I believe this is due to high sample rate but we should take a look as a group soon. Mostly because Croix knows how to change the sample rate on the color sensor better than I do. I also made a copy of our current main function for testing the color sensor in the future when other components/operations may get added(Isaiah, Apr 17 2:37 pm)
+## Required Components:
