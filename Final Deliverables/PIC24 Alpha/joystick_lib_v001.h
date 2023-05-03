@@ -17,6 +17,10 @@ void adc_init(void);
 unsigned int updateServo(unsigned int servoPosition);
 void initServo(void);
 void setServo(int val);
+void servoLeft_slow(void);
+void servoLeft_fast(void);
+void servoRight_slow(void);
+void servoRight_fast(void);
 
 
 
