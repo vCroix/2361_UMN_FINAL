@@ -81,10 +81,10 @@ void servoLeft_fast(void) {
     }
 }
 
-// Move the servo motor based on the magnitude of joystick position
+// Move the servo motor based on the magnitude and direction of joystick position
 // Outputs RB7 and RB8 are used to control LED indicators primarily used for debugging
 // servoPosition is not allowed outside of operating range.
-unsigned int updateServo(unsigned int servoPosition) {
+ void updateServo(void) {
     // Slow RIGHT
     if ((stickVal_horiz > 500) && (stickVal_horiz < 800)) {
             LATBbits.LATB8 = 0; // 
