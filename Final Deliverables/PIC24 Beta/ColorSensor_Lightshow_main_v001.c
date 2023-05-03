@@ -73,16 +73,19 @@ int main(){
         GREEN = getRGB(greenVal, clrVal);
         BLUE = getRGB(blueVal, clrVal);
       
-        if ((RED > 150) && (BLUE < 150) && (GREEN < 150)) { // This can be changed if you think other values are better
-          while(1){
-                for(i = 0; i < 255; i++){
+        if ((RED > 150) && (BLUE < 150) && (GREEN < 150)) { // This can be changed to produce accurate results depending on room lighting
+            // Enter Lightshow for winner!
+            while(1){
+                for(i = 0; i < 255; i++) {
                     writeColor(i, 0, 255-i);
                     delay(3);
                 }
-                for (i = 255; i > 0; i--){
+                for (i = 255; i > 0; i--) {
                     writeColor(i, 0, 255-i);
                     delay(3);
-                }
+                } 
+            }
+          
         }
         
         AVALID = 0; // Reset AVALID 
