@@ -15,6 +15,8 @@ extern "C" {
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt(void);
 void adc_init(void);
 unsigned int updateServo(unsigned int servoPosition);
+void initServo(void);
+void setServo(int val);
 
 
 
