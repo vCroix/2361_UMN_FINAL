@@ -14,7 +14,7 @@ volatile unsigned int stickVal_horiz = 0;
 
 // Contains current PWM duty cycle value
 // Middle Pos = 3000
-// Pos Range: 
+// Pos Range: 1000 ~ 5000
 volatile unsigned int servoPosition = 3000;
 
 // Update Horizontal Position Variable with every ADC reading
