@@ -81,43 +81,6 @@ void servoLeft_fast(void) {
     }
 }
 
-// Move the servo motor based on the magnitude and direction of joystick position
-// Outputs RB7 and RB8 are used to control LED indicators primarily used for debugging
-// servoPosition is not allowed outside of operating range.
- void updateServo(void) {
-    // Slow RIGHT
-    if ((stickVal_horiz > 500) && (stickVal_horiz < 800)) {
-            LATBbits.LATB8 = 0; // 
-            LATBbits.LATB7 = 1;
-            servoRight_slow();
-        }
-        // Fast RIGHT
-        else if (stickVal_horiz > 800) {
-            LATBbits.LATB8 = 0;
-            LATBbits.LATB7 = 1;
-            servoRight_fast();
-        }
-        
-        // Slow LEFT
-        else if ((stickVal_horiz < 470) && (stickVal_horiz > 250)) {
-            LATBbits.LATB7 = 0;
-            LATBbits.LATB8 = 1;
-            servoLeft_slow()
-        }
-        // Fast LEFT
-        else if(stickVal_horiz < 250) {
-            LATBbits.LATB7 = 0;
-            LATBbits.LATB8 = 1;
-           servoLeft_fast();
-        }
-        
-        // No Joystick input
-        else {
-            LATBbits.LATB7 = 1;
-            LATBbits.LATB8 = 1;
-        }
-}
-
 // Initialize servo motor for proper use
 void initServo(void) {
     // Use pin B6 as a PWM pin. This pin needs to be an output
