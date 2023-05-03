@@ -11,6 +11,7 @@
 // Contains Digital Value of Joystick Position
 // Middle joystick position digital value: 484 ~ 486
 volatile unsigned int stickVal_horiz = 0;
+volatile unsigned int servoPosition = 3000;
 
 // Update Horizontal Position Variable with every ADC reading
 void __attribute__((__interrupt__,__auto_psv__)) _ADC1Interrupt(void) {
