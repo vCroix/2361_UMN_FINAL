@@ -46,12 +46,8 @@ int main(void) {
     adc_init();
     initServo();
     
-    // servoPos range: 1000 ~ 5000
-    // Middle servoPos: 3000
-    unsigned int servoPos = 3000;
-    
     while(1) {
-        updateServo(servoPos); // Update Servo Position based on joystick location
+        updateServo(servoPos); // Update Servo Position based on joystick location. It will begin in middle position
         delay_ms(10); // Small Delay to make servo motion appear smoother
     } 
     return 0; // Never reached
