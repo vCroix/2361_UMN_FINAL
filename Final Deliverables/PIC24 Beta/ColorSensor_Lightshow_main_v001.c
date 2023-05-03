@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include "xc.h"
-#include "finalProject_asmLib.h"
+#include "alphaPIC_asmLib.h"
 #include "sensorLib_CTI.h"
+#include "alphaLED_CTI.h"
 
 // CW1: FLASH CONFIGURATION WORD 1 (see PIC24 Family Reference Manual 24.1)
 #pragma config ICS = PGx1          // Comm Channel Select (Emulator EMUC1/EMUD1 pins are shared with PGC1/PGD1)
@@ -73,7 +74,15 @@ int main(){
         BLUE = getRGB(blueVal, clrVal);
       
         if ((RED > 150) && (BLUE < 150) && (GREEN < 150)) { // This can be changed if you think other values are better
-            // TUrn on Lightshow while(1)
+          while(1){
+                for(i = 0; i < 255; i++){
+                    writeColor(i, 0, 255-i);
+                    delay(3);
+                }
+                for (i = 255; i > 0; i--){
+                    writeColor(i, 0, 255-i);
+                    delay(3);
+                }
         }
         
         AVALID = 0; // Reset AVALID 
