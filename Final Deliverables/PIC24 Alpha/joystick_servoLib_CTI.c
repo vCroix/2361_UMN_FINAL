@@ -1,6 +1,5 @@
 #include "xc.h"
-#include "joystick_lib_v001.h"
-#include "servo_lib_v001.h" // This library is reliant on our servo motor library
+#include "joystick_servoLib_CTI.h"
 
 /*
  * Analog Joystick Library
@@ -45,6 +44,38 @@ void adc_init(void) {
     T3CONbits.TON = 1;
 }
 
+// Incrememnt the servo position a small amount right
+void servoRight_fast(void) {
+    setServo(servoPosition -= 15);
+    if (servoPosition < 1000) {
+        servoPosition = 1000;
+    }
+}
+
+// Incremement servo position a large amount right
+void servoRight_slow(void) {
+    setServo(servoPosition += 15);
+    if (servoPosition < 1000) {
+        servoPosition = 1000;
+    }
+}
+
+// Increment servo position a small amount left
+void servoLeft_slow(void) {
+    setServo(servoPosition += 15);
+    if (servoPosition < 1000) {
+        servoPosition = 1000;
+    }
+}
+
+// Increment servo position a large amount left
+void servoLeft_fast(void) {
+    setServo(servoPosition += 15);
+    if (servoPosition < 1000) {
+        servoPosition = 1000;
+    }
+}
+
 // Move the servo motor based on the magnitude of joystick position
 // Outputs RB7 and RB8 are used to control LED indicators primarily used for debugging
 // servoPosition is not allowed outside of operating range.
@@ -53,38 +84,26 @@ unsigned int updateServo(unsigned int servoPosition) {
     if ((stickVal_horiz > 500) && (stickVal_horiz < 800)) {
             LATBbits.LATB8 = 0; // 
             LATBbits.LATB7 = 1;
-            setServo(servoPosition -= 15);
-            if (servoPosition < 1000) {
-                servoPosition = 1000;
-            }
+            servoRight_slow();
         }
         // Fast RIGHT
         else if (stickVal_horiz > 800) {
             LATBbits.LATB8 = 0;
             LATBbits.LATB7 = 1;
-            setServo(servoPosition -= 50);
-            if (servoPosition < 1000) {
-                servoPosition = 1000;
-            }
+            servoRight_fast();
         }
         
         // Slow LEFT
         else if ((stickVal_horiz < 470) && (stickVal_horiz > 250)) {
             LATBbits.LATB7 = 0;
             LATBbits.LATB8 = 1;
-            setServo(servoPosition += 15);
-            if (servoPosition > 5000) {
-                servoPosition = 5000;
-            }
+            servoLeft_slow()
         }
         // Fast LEFT
         else if(stickVal_horiz < 250) {
             LATBbits.LATB7 = 0;
             LATBbits.LATB8 = 1;
-            setServo(servoPosition += 50);
-            if (servoPosition > 5000) {
-                servoPosition = 5000;
-            }
+           servoLeft_fast();
         }
         
         // No Joystick input
