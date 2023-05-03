@@ -11,6 +11,10 @@
 // Contains Digital Value of Joystick Position
 // Middle joystick position digital value: 484 ~ 486
 volatile unsigned int stickVal_horiz = 0;
+
+// Contains current PWM duty cycle value
+// Middle Pos = 3000
+// Pos Range: 
 volatile unsigned int servoPosition = 3000;
 
 // Update Horizontal Position Variable with every ADC reading
@@ -64,16 +68,16 @@ void servoRight_slow(void) {
 // Increment servo position a small amount left
 void servoLeft_slow(void) {
     setServo(servoPosition += 15);
-    if (servoPosition < 1000) {
-        servoPosition = 1000;
+    if (servoPosition > 5000) {
+        servoPosition = 5000;
     }
 }
 
 // Increment servo position a large amount left
 void servoLeft_fast(void) {
     setServo(servoPosition += 15);
-    if (servoPosition < 1000) {
-        servoPosition = 1000;
+    if (servoPosition > 5000) {
+        servoPosition = 5000;
     }
 }
 
