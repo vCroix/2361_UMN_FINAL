@@ -94,6 +94,7 @@ unsigned int updateServo(unsigned int servoPosition) {
         }
 }
 
+// Initialize servo motor for proper use
 void initServo(void) {
     // Use pin B6 as a PWM pin. This pin needs to be an output
     // and have the output compare peripheral mapped to it. 
@@ -117,6 +118,7 @@ void initServo(void) {
     T3CONbits.TON = 1; // Turn on timer
 }
 
+// Adjust the servo position by changing the duty cycle of PWM signal
 void setServo(int Val) {
     OC1RS = Val;    // set shadow register to add level of protection. Will update real register automatically
 }
