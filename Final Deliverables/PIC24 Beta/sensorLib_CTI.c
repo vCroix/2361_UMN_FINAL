@@ -1,11 +1,7 @@
 #include "xc.h"
 #include "sensorLib_CTI.h"
 
-unsigned volatile int redVal = 0;
-unsigned volatile int greenVal = 0;
-unsigned volatile int blueVal = 0;
-unsigned volatile int clrVal = 0;
-
+// Exit internal interrupt sequence in Flora Color Sensor
 void i2c_exitInterrupt(void) {
     I2C2CONbits.SEN = 1;
     while(I2C2CONbits.SEN == 1);
@@ -23,6 +19,9 @@ void i2c_exitInterrupt(void) {
     while(I2C2CONbits.PEN == 1);
 }
     
+// Write 8-bit data package to Flora color sensor
+// regAddr represents the target register written to
+// Package represents 8-bit data package
 void i2c_write(char regAddr, char Package){
     I2C2CONbits.SEN = 1;
     while(I2C2CONbits.SEN == 1);
@@ -44,6 +43,11 @@ void i2c_write(char regAddr, char Package){
     while(I2C2CONbits.PEN == 1);
 }
 
+// Read 16-bit data package from Flora color sensor
+// lowColorReg is the first 8-bit register read from
+// The next read will target the register in Flora color sensor
+// Intended for use on high and low color registers. First read contains lower 8 bits.
+// return 16-bit package of combined data reads
 char i2c_read16bits(char lowColorReg){
     I2C2CONbits.SEN = 1;
     while(I2C2CONbits.SEN == 1);
@@ -83,13 +87,14 @@ char i2c_read16bits(char lowColorReg){
     I2C2CONbits.ACKEN = 1;
     while(I2C2CONbits.ACKEN);
     
-    
     I2C2CONbits.PEN = 1;
     while(I2C2CONbits.PEN == 1);    
     
     return (((highBits) << 8) | lowBits);
 }
 
+// Perform 8-bit read sequence from Flora color sensor and return data
+// regAddr represents the address of the register read from in Flora color sensor
 int i2c_read8bits(char regAddr){
     int data;
     
@@ -126,6 +131,8 @@ int i2c_read8bits(char regAddr){
     return data;
 }
 
+// Initialize I2C operation on PIC24 and power on/ enable Flora color sensor
+// Must be called before Flora color sensor can be used.
 void sensor_init(void){
     // PIC24 I2C settings
     I2C2CONbits.I2CEN = 0;
@@ -146,10 +153,13 @@ void sensor_init(void){
     delay((256 - 0xC0) * 12 / 5 + 1);
 }
 
+// Exit Idle state in Flora Color Sensor to re-enable data reading and ADC integration
 void exitIdle(void) {
     i2c_write(TCS34725_ENABLE, TCS34725_ENABLE_PON | TCS34725_ENABLE_AEN);
 }
 
+// Convert raw 16-bit color readings to uniform values from 0~255 and return new value
+// After conversion, a high value indicates more of that color is present in front of sensor
 int getRGB(float colorRaw, float clearRaw) {
     float sum = clearRaw;
     if (clearRaw == 0) {
